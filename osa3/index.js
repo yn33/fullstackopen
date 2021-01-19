@@ -4,6 +4,7 @@ const app = express()
 app.use(express.json()) 
 
 let persons = [
+
   {
     id: 1,
     name: "Arto Hellas",
@@ -29,6 +30,12 @@ let persons = [
   
   app.get('/api/persons', (req, res) => {
     res.json(persons)
+  })
+
+  app.get('/info', (req, res) => {
+      const date = new Date()
+      const output = "Phonebook has info for 4 people<br/><br/>".concat(date.toString())
+      res.send(output)
   })
 
   app.get('/api/notes/:id', (request, response) => {
