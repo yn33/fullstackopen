@@ -38,49 +38,59 @@ let persons = [
       res.send(output)
   })
 
-  app.get('/api/notes/:id', (request, response) => {
+  app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const note = notes.find(note => note.id === id)
-    if (note) {
-        response.json(note)
+    const person = persons.find(person => person.id === id)
+    if (person) {
+        response.json(person)
       } else {
         response.status(404).end()
       }
   })
   
-  app.delete('/api/notes/:id', (request, response) => {
+  app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    notes = notes.filter(note => note.id !== id)
+    persons = persons.filter(person => person.id !== id)
   
     response.status(204).end()
   })
   
   const generateId = () => {
-    const maxId = notes.length > 0
-      ? Math.max(...notes.map(n => n.id))
-      : 0
-    return maxId + 1
+    const random = Math.random()
+    return Math.floor(random*10000)
   }
 
-  app.post('/api/notes', (request, response) => {
+  app.post('/api/persons', (request, response) => {
     const body = request.body
 
-    if (!body.content) {
+    if (!body.name) {
         return response.status(400).json({ 
-        error: 'content missing' 
+        error: 'name missing' 
         })
     }
 
-    const note = {
-        content: body.content,
-        important: body.important || false,
-        date: new Date(),
-        id: generateId(),
+    if (persons.map(person => person.name).includes(body.name)) {
+      return response.status(400).json({ 
+        error: 'name must be unique' 
+        })
     }
 
-    notes = notes.concat(note)
+    if (!body.number) {
+      return response.status(400).json({ 
+      error: 'number missing' 
+      })
+    }
 
-    response.json(note)
+
+    const person = {
+        id: generateId(),
+        name: body.name,
+        number: body.number
+    }
+
+    persons = persons.concat(person)
+
+    response.json(person)
   })
 
   const PORT = 3001
