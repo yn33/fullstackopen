@@ -6,7 +6,12 @@ const Button = ({name, action}) => {
 }
 
 const StatisticLine = ({text, value}) => {
-  return <p>{text} {value}</p>
+  return (
+  <tr>
+    <td>{text}</td>
+    <td>{value}</td>
+  </tr>
+  )
 }
 
 const Statistics = ({good, neutral, bad}) => {
@@ -39,12 +44,14 @@ const Statistics = ({good, neutral, bad}) => {
 
   return (
     <div>
-      <StatisticLine text="good" value={good}/>
-      <StatisticLine text="neutral" value={neutral}/>
-      <StatisticLine text="bad" value={bad}/>
-      <StatisticLine text="all" value={calculateTotal(good, neutral, bad)}/>
-      <StatisticLine text="average" value={average(good, neutral, bad)}/>
-      <StatisticLine text="positives" value={positives(good, neutral, bad) + " %"}/>
+      <table>
+        <StatisticLine text="good" value={good}/>
+        <StatisticLine text="neutral" value={neutral}/>
+        <StatisticLine text="bad" value={bad}/>
+        <StatisticLine text="all" value={calculateTotal(good, neutral, bad)}/>
+        <StatisticLine text="average" value={average(good, neutral, bad)}/>
+        <StatisticLine text="positives" value={positives(good, neutral, bad) + " %"}/>
+      </table>
     </div>
   )
   
