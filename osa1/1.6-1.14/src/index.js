@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Statistics = props => {
+const Statistics = ({good, neutral, bad}) => {
 
   function calculateTotal(good, neutral, bad) {
     return good + neutral + bad
@@ -25,14 +25,18 @@ const Statistics = props => {
     return result*100 
   }
 
+  if(good == 0 && neutral == 0 && bad == 0) {
+    return "No feedback given"
+  }
+
   return (
     <div>
-      <p>good {props.good}</p>
-      <p>neutral {props.neutral}</p>
-      <p>bad {props.bad}</p>
-      <p>all {calculateTotal(props.good, props.neutral, props.bad)}</p>
-      <p>average {average(props.good, props.neutral, props.bad)}</p>
-      <p>positive {positives(props.good, props.neutral, props.bad)} %</p>
+      <p>good {good}</p>
+      <p>neutral {neutral}</p>
+      <p>bad {bad}</p>
+      <p>all {calculateTotal(good, neutral, bad)}</p>
+      <p>average {average(good, neutral, bad)}</p>
+      <p>positive {positives(good, neutral, bad)} %</p>
     </div>
   )
   
