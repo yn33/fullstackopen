@@ -1,49 +1,72 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
+const Country = ({country}) => {
+  return (
+    <div>
+      <b>{country.name}</b>
+      <p>capital {country.capital}</p>
+      <p>population {country.population}</p>
+      <b>languages</b>
+      <ul>
+        {country.languages.map(lang =>
+          <li key={lang.name}>{lang.name}</li>
+        )}
+      </ul>
+      <div>
+        <img src={country.flag} height="100" alt=''></img>
+      </div>
+    </div>
+  )
+}
 
 const Display = ({filtered}) => {
 
   const len = filtered.length
+  const [show, setShow] = useState('')
+
+  function getOnClick(country) {
+    return () => setShow(country)
+  }
 
   if(len > 10) {
+    if(show !== '') {
+      setShow('')
+    }
     return (
     <div>
       <p>Too many matches, specify another filter</p>
     </div>
     )
   } else if(len === 0) {
+    if(show !== '') {
+      setShow('')
+    }
     return (
       <div>
         <p>No matches</p>
       </div>
       )
   } else if(len > 1) {
-    return (
-    <div>
-      {filtered.map(country =>
-        <p key={country.name}>{country.name}</p>
-      )}
-    </div>
-    )
-  } else {
-    const country = filtered[0]
-    return (
-      <div>
-        <b>{country.name}</b>
-        <p>capital {country.capital}</p>
-        <p>population {country.population}</p>
-        <b>languages</b>
-        <ul>
-          {country.languages.map(lang =>
-            <li key={lang.name}>{lang.name}</li>
-          )}
-        </ul>
+    if(show !== '') {
+      return <Country country={show}/>
+    } else {
+      return (
         <div>
-          <img src={country.flag} height="100"></img>
+          {filtered.map(country =>
+          <div key={country.name}>
+            {country.name}
+            <button onClick={getOnClick(country)}>show</button>      
+          </div>
+          )}
         </div>
-      </div>
-    )
+      )
+    }
+  } else {
+    if(show !== '') {
+      setShow('')
+    }
+    return <Country country={filtered[0]}/>
   }
 }
 
