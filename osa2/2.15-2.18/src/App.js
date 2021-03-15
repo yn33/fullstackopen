@@ -31,11 +31,15 @@ const NewForm = (props) => {
   )
 }
 
-const Numbers = ({filtered}) => {
+const Numbers = ({filtered, handleDelete}) => {
+
   return (
   <div>
     {filtered.map(person =>
-    <p key={person.name}>{person.name} {person.number}</p>
+    <div key={person.name}>
+      <>{person.name} {person.number}</>
+      <button key={person.name} onClick={handleDelete(person)}>delete</button>
+    </div>
     )}
   </div>
   )
@@ -71,16 +75,28 @@ const App = () => {
     setFilter(event.target.value)
   }
 
+  const handleDelete = (deletePerson) => {
+    return () => {
+      const ask = window.confirm(`Delete ${deletePerson.name}?`)
+      if(ask) {
+        services
+          .del(deletePerson.id)
+          .then(() => {
+            setPersons(persons.filter(person => person.id !== deletePerson.id))
+          })
+      }
+    }
+  }
+
   const addPerson = (event) => {
     event.preventDefault()
     console.log(newName)
-    
-    if (!persons.map(person => person.name).includes(newName)) {
+    const newPerson = {
+      name: newName,
+      number: newNumber
+    }
 
-      const newPerson = {
-        name: newName,
-        number: newNumber
-      }
+    if (!persons.map(person => person.name).includes(newName)) {
 
       services
         .create(newPerson)
@@ -89,8 +105,19 @@ const App = () => {
           setNewName('')
           setNewNumber('')
         })
+
     } else {
-      alert(`${newName} is already added to phonebook`)
+      const ask = window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)
+      if(ask) {
+        const prev = persons.filter(person => person.name === newName)
+        services
+          .update(prev[0].id, newPerson)
+          .then((data) => {
+            setPersons(persons.map(person => person.id !== prev[0].id ? person : data))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
     }
   }
 
@@ -110,7 +137,7 @@ const App = () => {
         newNumber={newNumber}
         handleNumberChange={handleNumberChange}/>
       <h2>Numbers</h2>
-        <Numbers filtered={filtered}/>
+        <Numbers filtered={filtered} handleDelete={handleDelete}/>
     </div>
   )
 
