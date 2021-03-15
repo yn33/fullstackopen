@@ -1,16 +1,26 @@
 import React, { useState, useEffect } from 'react'
 import services from './services/persons'
 
-const Notification = ({ message }) => {
+const Notification = ({ message, color }) => {
   if (message === '') {
     return null
   }
+  if (color === "green") {
+    return (
+      <div className="greennotif">
+        {message}
+      </div>
+    )
+  }
+  if (color === "red") {
+    return (
+      <div className="rednotif">
+        {message}
+      </div>
+    )
+  }
 
-  return (
-    <div className="notif">
-      {message}
-    </div>
-  )
+  return null
 }
 
 const Filter = ({filter, handleFilterChange}) => {
@@ -63,6 +73,7 @@ const App = () => {
   const [ newNumber, setNewNumber ] = useState('')
   const [ filter, setFilter ] = useState('')
   const [ message, setMessage] = useState('')
+  const [ color, setColor ] = useState("green")
 
   useEffect(() => {
     services
@@ -138,6 +149,14 @@ const App = () => {
               setMessage('')
             }, 3000)
           })
+          .catch(error => {
+            setColor("red")
+            setMessage(`Information of ${newPerson.name} has already been removed from the server`)
+            setTimeout(() => {
+              setMessage('')
+              setColor("green")
+            }, 3000)
+          })
       }
     }
   }
@@ -149,7 +168,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <Notification message={message}/>
+        <Notification message={message} color={color}/>
         <Filter filter={filter} handleFilterChange={handleFilterChange}/>
       <h2>add a new</h2>
         <NewForm
