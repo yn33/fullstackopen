@@ -31,6 +31,15 @@ const PORT = process.env.PORT
     .catch(error => next(error))
   })
   
+  app.get('/info', (req, res) => {
+    PhoneNumber.find({}).then(persons => {
+      const date = new Date()
+      const output = `Phonebook has info for ${persons.length} people<br/><br/>`.concat(date.toString())
+      res.send(output)
+    })
+    .catch(error => next(error))
+  })
+
   app.post('/api/persons', (req, res, next) => {
     const body = req.body
 
