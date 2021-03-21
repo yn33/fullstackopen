@@ -60,6 +60,21 @@ const PORT = process.env.PORT
 
   })
 
+  app.put('/api/persons/:id', (req, res, next) => {
+    const body = req.body
+  
+    const person = {
+      name: body.name,
+      number: body.number,
+    }
+  
+    PhoneNumber.findByIdAndUpdate(req.params.id, person, { new: true })
+      .then(updatedPerson => {
+        res.json(updatedPerson)
+      })
+      .catch(error => next(error))
+  })
+
   app.delete('/api/persons/:id', (req, res, next) => {
     PhoneNumber.findByIdAndRemove(req.params.id)
     .then(result => {
